@@ -35,7 +35,7 @@ def load_and_preprocess_dataset(file_path):
     return df
 
 # Load the dataset
-file_path = "data\processed\hate_speech_augmented.csv"
+file_path = "data/processed/hate_speech_augmented.csv"
 df = load_and_preprocess_dataset(file_path)
 
 # Split into training and validation sets
@@ -81,15 +81,17 @@ def train_model(model_name):
         output_dir=f"models/fine_tuned/{model_name}",
         per_device_train_batch_size=32,  # Batch size for training
         per_device_eval_batch_size=32,  # Batch size for evaluation
-        num_train_epochs=100,           # Number of epochs
+        num_train_epochs=10,            # Reduced epochs for faster training
         evaluation_strategy="epoch",   # Evaluate at the end of each epoch
         logging_dir=f"logs/{model_name}",
         logging_steps=50,              # Log every 50 steps
-        save_strategy="epoch",         # Save checkpoint at the end of each epoch
+        save_strategy="no",            # Avoid saving intermediate checkpoints
         load_best_model_at_end=True,   # Load the best model at the end of training
         metric_for_best_model="accuracy",
         greater_is_better=True,
-        fp16=True if torch.cuda.is_available() else False  # Enable mixed precision on GPU
+        fp16=True if torch.cuda.is_available() else False,  # Enable mixed precision on GPU
+        save_total_limit=1,            # Keep only the final checkpoint
+        report_to="none"               # Disable reporting to third-party tools like WandB
     )
 
     trainer = Trainer(
@@ -102,9 +104,10 @@ def train_model(model_name):
     # Train the model
     trainer.train()
 
-    # Save the final model
+    # Save the final model and tokenizer
     model.save_pretrained(f"models/fine_tuned/{model_name}")
-    print(f"Model saved to models/fine_tuned/{model_name}")
+    tokenizer.save_pretrained(f"models/fine_tuned/{model_name}")
+    print(f"Model and tokenizer saved to models/fine_tuned/{model_name}")
 
 # Train both models
 train_model("mbert")  # Train multilingual BERT
