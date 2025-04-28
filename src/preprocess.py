@@ -1,78 +1,81 @@
-import json
 import pandas as pd
-from collections import Counter
-from gan import TextGAN  # Import the GAN class
-from transformers import BertTokenizer
+import os
 
-# Load dataset
-def load_dataset(file_path):
-    """Load the dataset from a JSON file."""
-    with open(file_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+# Helper: load tsv, csv, or excel automatically
+def load_file(file_path):
+    ext = os.path.splitext(file_path)[1]
+    if ext == ".tsv":
+        return pd.read_csv(file_path, sep="\t")
+    elif ext == ".csv":
+        return pd.read_csv(file_path)
+    elif ext in [".xls", ".xlsx"]:
+        return pd.read_excel(file_path)
+    else:
+        raise ValueError(f"Unsupported file type: {ext}")
 
-# Process dataset and aggregate labels
-def process_dataset(data):
-    """Process the dataset and aggregate labels using majority voting."""
-    processed = []
-    for post_id, post in data.items():
-        text = " ".join(post["post_tokens"])
-        
-        # Aggregate annotator labels
-        annotator_labels = [annotator["label"] for annotator in post["annotators"]]
-        if not annotator_labels:  # Skip if no labels are available
-            continue
-        
-        label_counts = Counter(annotator_labels)
-        final_label = label_counts.most_common(1)[0][0]  # Majority voting
-        
-        processed.append({"text": text, "label": final_label})
-    return pd.DataFrame(processed)
+# Helper: find the correct label column
+def find_label_column(df):
+    possible_cols = ["task1", "task_1", "labels", "label"]
+    for col in possible_cols:
+        if col in df.columns:
+            return col
+    raise ValueError(f"No label column found! Available columns: {list(df.columns)}")
 
-# Generate synthetic data using GAN
-def generate_synthetic_data(gan, tokenizer, num_samples=5000, vocab_size=1000):
-    """Generate synthetic data using a GAN and decode it into text."""
-    synthetic_data = gan.generate_synthetic_data(
-        num_samples=num_samples,
-        start_token=0,
-        vocab_size=vocab_size
-    )
+# Helper: process one dataframe
+def process_dataframe(df, language, label_map):
+    text_col = "text"
+    label_col = find_label_column(df)
+
+    df = df[[text_col, label_col]].dropna()
+    df["label"] = df[label_col].map(label_map)
+    df["language"] = language
+    df = df.dropna(subset=["label"])
+    return df[["text", "label", "language"]]
+
+def preprocess_data(output_file):
+    base_dir = "data/raw/HASOC2021"
+    datasets = []
     
-    # Decode synthetic data back to text
-    decoded_synthetic = [
-        {"text": tokenizer.decode(seq, skip_special_tokens=True), "label": "hateful"}
-        for seq in synthetic_data
+    label_map_task1 = {"HOF": 1, "NOT": 0, "HOF_OFFENSIVE": 1, "HOF_HATE": 1, "NOT_OFFENSIVE": 0}
+
+    # English files
+    english_files = [
+        "english_2019_1.tsv",
+        "english_2019_2.tsv",
+        "english_2020.xlsx",
+        "english_2021.csv",
     ]
-    return pd.DataFrame(decoded_synthetic)
+    for file in english_files:
+        print(f"Loading English: {file}")
+        df = load_file(os.path.join(base_dir, file))
+        datasets.append(process_dataframe(df, language="english", label_map=label_map_task1))
+    
+    # Hindi files
+    hindi_files = [
+        "hindi_2019_1.tsv",
+        "hindi_2019_2.tsv",
+        "hindi_2020.xlsx",
+        "hindi_2021.csv",
+    ]
+    for file in hindi_files:
+        print(f"Loading Hindi: {file}")
+        df = load_file(os.path.join(base_dir, file))
+        datasets.append(process_dataframe(df, language="hindi", label_map=label_map_task1))
+    
+    # Marathi file
+    print("Loading Marathi: mr_Hasoc2021_train.xlsx")
+    df_marathi = load_file(os.path.join(base_dir, "mr_Hasoc2021_train.xlsx"))
+    datasets.append(process_dataframe(df_marathi, language="marathi", label_map=label_map_task1))
 
-# Main preprocessing function
-def preprocess_data(input_file, output_file, num_synthetic_samples=5000):
-    """Preprocess the dataset by combining real and synthetic data."""
-    # Load and process real dataset
-    print("Loading and processing real dataset...")
-    data = load_dataset(input_file)
-    real_df = process_dataset(data)
+    # Combine all
+    full_df = pd.concat(datasets, ignore_index=True)
+    print(f"Total samples combined: {len(full_df)}")
+    
+    # Save
+    print(f"Saving to {output_file}...")
+    full_df.to_csv(output_file, index=False)
+    print("Done!")
 
-    # Initialize GAN and tokenizer
-    print("Initializing GAN and tokenizer...")
-    gan = TextGAN(vocab_size=1000, embedding_dim=128, hidden_dim=256, max_seq_len=50)
-    tokenizer = BertTokenizer.from_pretrained("bert-base-multilingual-cased")
-
-    # Generate synthetic data
-    print(f"Generating {num_synthetic_samples} synthetic samples...")
-    synthetic_df = generate_synthetic_data(gan, tokenizer, num_samples=num_synthetic_samples, vocab_size=1000)
-
-    # Combine real and synthetic data
-    print("Combining real and synthetic data...")
-    combined_df = pd.concat([real_df, synthetic_df], ignore_index=True)
-
-    # Save preprocessed data
-    combined_df.to_csv(output_file, index=False)
-    print(f"Dataset preprocessed and saved as '{output_file}'")
-
-# Run preprocessing
 if __name__ == "__main__":
-    preprocess_data(
-        input_file="data/raw/HateXplain/data/dataset.json",
-        output_file="data/processed/hate_speech_augmented.csv",
-        num_synthetic_samples=5000  # Adjust the number of synthetic samples as needed
-    )
+    output_file = "data/processed/hasoc2021_multilingual.csv"
+    preprocess_data(output_file)
