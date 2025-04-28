@@ -1,0 +1,23 @@
+# Ignore virtual environment
+myenv/
+venv/
+env/
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore model weights and tokenizer folders
+models/
+
+# Ignore data outputs
+outputs/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore Streamlit cache
+.streamlit/
