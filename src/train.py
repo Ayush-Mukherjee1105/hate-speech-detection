@@ -61,7 +61,7 @@ def train_model(model_name, tokenizer_class, model_class, pretrained_name):
         weight_decay=0.01,                      # ⬅️ regularization
         per_device_train_batch_size=16,
         per_device_eval_batch_size=16,
-        num_train_epochs=7,                     # ⬅️ increased slightly
+        num_train_epochs=10,                     # ⬅️ increased slightly
         warmup_steps=500,                       # ⬅️ to slow down LR decay
         logging_dir=f"logs/{model_name}",
         logging_steps=50,
