@@ -73,7 +73,7 @@ ax.set_ylim(0, 1)
 ax.legend(fontsize=12)
 plt.grid(axis="y", linestyle="--", alpha=0.7)
 plt.tight_layout()
-plt.savefig("evaluation_comparison.png")
+plt.savefig("results/evaluation_comparison.png")
 print("\nSaved plot as evaluation_comparison.png")
 
 # Save reports
