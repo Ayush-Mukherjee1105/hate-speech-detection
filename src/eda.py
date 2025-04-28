@@ -22,7 +22,7 @@ plt.xlabel('Language')
 plt.ylabel('Count')
 plt.xticks(rotation=45)
 plt.tight_layout()
-plt.savefig('eda_language_distribution.png')
+plt.savefig('results/eda_language_distribution.png')
 plt.close()
 
 # Plot 2: Class Distribution
@@ -32,7 +32,7 @@ plt.title('Class Distribution (0=Non-Offensive, 1=Offensive)')
 plt.xlabel('Label')
 plt.ylabel('Count')
 plt.tight_layout()
-plt.savefig('eda_label_distribution.png')
+plt.savefig('results/eda_label_distribution.png')
 plt.close()
 
 print("\nEDA plots saved: eda_language_distribution.png, eda_label_distribution.png")
