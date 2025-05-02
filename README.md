@@ -6,6 +6,7 @@ With the rise of online communication, hate speech has transcended linguistic an
 
 We trained and evaluated our models on the **HASOC 2021 multilingual dataset** (English, Hindi, Marathi) and deployed a **real-time detection web app using Streamlit**. This project aims to bridge the gap between cutting-edge research and practical deployment for content moderation, NGO monitoring, and user flagging systems.
 
+[Alt_text]
 ---
 
 ## 🧠 Core Features
@@ -96,51 +97,6 @@ We trained and evaluated our models on the **HASOC 2021 multilingual dataset** (
 
 ---
 
-## 📚 References & Citations
-
-```bibtex
-@article{devlin2019bert,
-  title={BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding},
-  author={Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina},
-  journal={NAACL-HLT},
-  year={2019},
-  url={https://arxiv.org/abs/1810.04805}
-}
-
-@inproceedings{conneau2020unsupervised,
-  title={Unsupervised Cross-lingual Representation Learning at Scale},
-  author={Conneau, Alexis and Khandelwal, Kartikay and Goyal, Naman and Chaudhary, Vishrav and Wenzek, Guillaume and Guzmán, Francisco and Grave, Edouard and Ott, Myle and Zettlemoyer, Luke and Stoyanov, Veselin},
-  booktitle={Proceedings of ACL},
-  year={2020},
-  url={https://arxiv.org/abs/1911.02116}
-}
-
-@dataset{hasoc2021,
-  title={HASOC 2021: Hate Speech and Offensive Content Identification in English, Hindi, and Marathi},
-  url={https://hasocfire.github.io/hasoc/2021/}
-}
-
-@misc{globalwitness2022,
-  title={Facebook Failed to Detect Hate Speech in Kenya Election Ads},
-  author={Global Witness},
-  year={2022},
-  url={https://www.globalwitness.org/en/campaigns/digital-threats/facebook-kenya-hate-speech-ads/}
-}
-
-@misc{hrw2024,
-  title={India: Government Officials Use Hate Speech During Campaign},
-  author={Human Rights Watch},
-  year={2024},
-  url={https://www.hrw.org}
-}
-
-@misc{cdc2024,
-  title={Cyberbullying and Suicide Risk Among Adolescents},
-  author={Centers for Disease Control and Prevention},
-  year={2024},
-  url={https://www.cdc.gov}
-}
-```
 ## 🙌 Acknowledgments
 
 - 🔗 [Hugging Face Transformers](https://huggingface.co/transformers/)
