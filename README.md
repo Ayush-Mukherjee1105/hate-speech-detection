@@ -6,7 +6,8 @@ With the rise of online communication, hate speech has transcended linguistic an
 
 We trained and evaluated our models on the **HASOC 2021 multilingual dataset** (English, Hindi, Marathi) and deployed a **real-time detection web app using Streamlit**. This project aims to bridge the gap between cutting-edge research and practical deployment for content moderation, NGO monitoring, and user flagging systems.
 
-[Alt_text]
+![Alt Text](1.jpg)
+
 ---
 
 ## 🧠 Core Features
@@ -17,6 +18,11 @@ We trained and evaluated our models on the **HASOC 2021 multilingual dataset** (
 - 📊 **Robust Evaluation**: Weighted F1, precision, recall, PR curves, and loss analysis.
 - ⚡ **Scalable Pipeline**: Easily adaptable for more languages with better compute resources.
 - 🧱 **Reproducibility-Oriented**: Models selected based on performance, resource efficiency, and popularity.
+
+![Alt Text](2.jpg)
+![Alt Text](3.jpg)
+![Alt Text](4.jpg)
+![Alt Text](5.jpg)
 
 ---
 
